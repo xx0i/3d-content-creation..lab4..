@@ -16,6 +16,7 @@ void PrintLabeledDebugString(const char* label, const char* toPrint)
 class Renderer
 {
 	// TODO: Part 2b
+	// TODO: Part 3a
 	
 	// proxy handles
 	GW::SYSTEM::GWindow win;
@@ -35,15 +36,13 @@ class Renderer
 	// pipeline settings for drawing (also required)
 	VkPipeline pipeline = nullptr;
 	VkPipelineLayout pipelineLayout = nullptr;
+	// TODO: Part 2d
+	// TODO: Part 3d
 	unsigned int windowWidth, windowHeight;
 
 	// TODO: Part 2a
-	// TODO: Part 2b
-	// TODO: Part 2e
-	// TODO: Part 2f
-	// TODO: Part 2g
-	// TODO: Part 4f
-	// TODO: Part 4g
+	// TODO: Part 2b // TODO: Part 4d
+	// TODO: Part 3a
 public:
 
 	Renderer(GW::SYSTEM::GWindow _win, GW::GRAPHICS::GVulkanSurface _vlk)
@@ -53,9 +52,8 @@ public:
 		UpdateWindowDimensions();
 
 		// TODO: Part 2a
-		// TODO: Part 2b
-		// TODO: Part 4g
-		// TODO: part 3b
+		// TODO: Part 2b // TODO: Part 4d
+		// TODO: part 3a
 
 		InitializeGraphics();
 		BindShutdownCallback();
@@ -73,7 +71,7 @@ private:
 		GetHandlesFromSurface();
 		InitializeVertexBuffer();
 		// TODO: Part 1g
-		// TODO: Part 2d
+		// TODO: Part 2d // TODO: Part 3d
 		CompileShaders();
 		InitializeGraphicsPipeline();
 	}
@@ -125,7 +123,7 @@ private:
 	{
 		shaderc_compile_options_t retval = shaderc_compile_options_initialize();
 		shaderc_compile_options_set_source_language(retval, shaderc_source_language_hlsl);
-		shaderc_compile_options_set_invert_y(retval, true); // TODO: Part 2i
+		shaderc_compile_options_set_invert_y(retval, true); // TODO: Part 2g
 #ifndef NDEBUG
 		shaderc_compile_options_set_generate_debug_info(retval);
 #endif
@@ -219,11 +217,7 @@ private:
 			VK_DYNAMIC_STATE_SCISSOR
 		};
 		VkPipelineDynamicStateCreateInfo dynamic_create_info = CreateVkPipelineDynamicStateCreateInfo(dynamic_states, 2);
-		// TODO: Part 2e
-		// TODO: Part 2f
-		// TODO: Part 2g
-		// TODO: Part 2h
-		// TODO: Part 4f
+
 		CreatePipelineLayout();
 
 		// Pipeline State... (FINALLY) 
@@ -397,8 +391,7 @@ private:
 	void CreatePipelineLayout()
 	{
 		// Descriptor pipeline layout
-		// TODO: Part 2e
-		// TODO: Part 3c
+		// TODO: Part 2d // TODO: Part 3d
 		VkPipelineLayoutCreateInfo pipeline_layout_create_info = {};
 		pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipeline_layout_create_info.setLayoutCount = 0;
@@ -423,15 +416,14 @@ private:
 public:
 	void Render()
 	{
+		// TODO: Part 3i
 		// TODO: Part 2a
-		// TODO: Part 4d
 		VkCommandBuffer commandBuffer = GetCurrentCommandBuffer();
 		SetUpPipeline(commandBuffer);
+		// TODO: Part 3i
 		// TODO: Part 1h
-		// TODO: Part 2i
-		// TODO: Part 3b
-		// TODO: Part 3d
-		// TODO: Part 4d
+		// TODO: Part 2e
+		// TODO: Part 3f
 		vkCmdDraw(commandBuffer, 3, 1, 0, 0); // TODO: Part 1d
 	}
 
@@ -482,12 +474,11 @@ private:
 		// Release allocated buffers, shaders & pipeline
 		// TODO: Part 1g
 		// TODO: Part 2d
+		// TODO: Part 3d
 		vkDestroyBuffer(device, vertexHandle, nullptr);
 		vkFreeMemory(device, vertexData, nullptr);
 		vkDestroyShaderModule(device, vertexShader, nullptr);
 		vkDestroyShaderModule(device, fragmentShader, nullptr);
-		// TODO: Part 2e
-		// TODO: part 2f
 		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 		vkDestroyPipeline(device, pipeline, nullptr);
 	}
