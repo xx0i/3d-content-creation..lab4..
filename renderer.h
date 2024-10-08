@@ -44,6 +44,9 @@ class Renderer
 	unsigned int windowWidth, windowHeight;
 
 	// TODO: Part 2a
+	GW::MATH::GMatrix interfaceProxy;
+	GW::MATH::GMATRIXF viewMatrix = GW::MATH::GIdentityMatrixF;
+	GW::MATH::GMATRIXF leftHandedPerspectiveMatrix = GW::MATH::GIdentityMatrixF;
 	// TODO: Part 2b // TODO: Part 4d
 	// TODO: Part 3a
 public:
@@ -55,6 +58,7 @@ public:
 		UpdateWindowDimensions();
 
 		// TODO: Part 2a
+		interfaceProxy.Create();
 		// TODO: Part 2b // TODO: Part 4d
 		// TODO: part 3a
 
@@ -449,6 +453,36 @@ public:
 		// TODO: Part 2e
 		// TODO: Part 3f
 		//vkCmdDraw(commandBuffer, FSLogo_vertexcount, 1, 0, 0); // TODO: Part 1d
+	}
+
+	void initializeViewMatrix()
+	{
+		//GW::MATH::GMATRIXF translationMatrix = GW::MATH::GIdentityMatrixF;
+		//GW::MATH::GVECTORF translationVector = { 0.75f, 0.25f, -1.5f, 1.0f };
+		//interfaceProxy.TranslateGlobalF(translationMatrix, translationVector, translationMatrix);
+		//interfaceProxy.RotateYGlobalF(translationMatrix, G_DEGREE_TO_RADIAN_F(25), translationMatrix);
+
+		//interfaceProxy.RotateXGlobalF(translationMatrix, G_DEGREE_TO_RADIAN_F(45), translationMatrix);
+
+		//interfaceProxy.InverseF(translationMatrix, viewMatrix);
+		GW::MATH::GVECTORF cameraPosition = { 0.75f, 0.25f, -1.5f, 1.0f };
+
+		// Define the target position (where the camera is looking)
+		GW::MATH::GVECTORF targetPosition = { 0.0f, 0.0f, 0.0f, 1.0f }; // Looking at the origin
+
+		// Define the up vector
+		GW::MATH::GVECTORF upVector = { 0.0f, 1.0f, 0.0f, 0.0f }; // Y-axis is up
+
+		// Create the view matrix using the look-at function
+		interfaceProxy.LookAtLHF(cameraPosition, targetPosition, upVector, viewMatrix);
+
+	}
+
+	void initializePerspectiveMatrix()
+	{
+		float aspectRatio = 0.0f;
+		vlk.GetAspectRatio(aspectRatio);
+		interfaceProxy.ProjectionDirectXLHF(G_DEGREE_TO_RADIAN_F(65.0f), aspectRatio, 0.1, 100, leftHandedPerspectiveMatrix);
 	}
 
 private:
