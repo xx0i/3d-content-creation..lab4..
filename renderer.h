@@ -109,7 +109,7 @@ private:
 		GvkHelper::write_to_buffer(device, vertexData, data, sizeInBytes);
 	}
 
-	void InitializeIndexBuffer()
+	void InitializeIndexBuffer() //part of 1g
 	{
 		GvkHelper::create_buffer(physicalDevice, device, sizeof(FSLogo_indices),
 			VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -445,6 +445,7 @@ public:
 		SetUpPipeline(commandBuffer);
 		// TODO: Part 3i
 		// TODO: Part 1h
+		vkCmdDrawIndexed(commandBuffer, FSLogo_indexcount, 1, 0, 0, 0);
 		// TODO: Part 2e
 		// TODO: Part 3f
 		vkCmdDraw(commandBuffer, FSLogo_vertexcount, 1, 0, 0); // TODO: Part 1d
@@ -469,6 +470,7 @@ private:
 
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 		BindVertexBuffers(commandBuffer);
+		vkCmdBindIndexBuffer(commandBuffer, indexHandle, 0, VK_INDEX_TYPE_UINT16);
 	}
 
 	void SetViewport(const VkCommandBuffer& commandBuffer)
