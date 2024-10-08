@@ -425,7 +425,7 @@ public:
 		// TODO: Part 1h
 		// TODO: Part 2e
 		// TODO: Part 3f
-		vkCmdDraw(commandBuffer, 3, 1, 0, 0); // TODO: Part 1d
+		vkCmdDraw(commandBuffer, FSLogo_vertexcount, 1, 0, 0); // TODO: Part 1d
 	}
 
 private:
