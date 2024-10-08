@@ -94,7 +94,7 @@ private:
 			-0.5f, -0.5f
 		};
 
-		CreateVertexBuffer(&verts[0], sizeof(verts));
+		CreateVertexBuffer(&FSLogo_vertices[0], sizeof(FSLogo_vertices));
 	}
 
 	void CreateVertexBuffer(const void* data, unsigned int sizeInBytes)
