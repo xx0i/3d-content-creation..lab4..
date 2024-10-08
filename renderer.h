@@ -469,7 +469,7 @@ private:
 		SetScissor(commandBuffer);
 
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-		BindVertexBuffers(commandBuffer);
+		//BindVertexBuffers(commandBuffer);
 		vkCmdBindIndexBuffer(commandBuffer, indexHandle, 0, VK_INDEX_TYPE_UINT32);
 	}
 
