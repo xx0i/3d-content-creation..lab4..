@@ -17,6 +17,11 @@ void PrintLabeledDebugString(const char* label, const char* toPrint)
 class Renderer
 {
 	// TODO: Part 2b
+	struct shaderVars
+	{
+		GW::MATH::GMATRIXF viewMatrix, perspectiveMatrix;
+		GW::MATH::GVECTORF lightColour, lightDir;
+	};
 	// TODO: Part 3a
 	
 	// proxy handles
@@ -51,6 +56,8 @@ class Renderer
 	GW::MATH::GVECTORF lightDir = { (-1.0f/sqrt(6.0f)), (-1.0f / sqrt(6.0f)), (2.0f / sqrt(6.0f)) }; //original values were { -1.0f, -1.0f, 2.0f }
 
 	// TODO: Part 2b // TODO: Part 4d
+	shaderVars shader = {};
+	
 	// TODO: Part 3a
 public:
 
@@ -63,6 +70,8 @@ public:
 		// TODO: Part 2a
 		interfaceProxy.Create();
 		// TODO: Part 2b // TODO: Part 4d
+		shader.lightColour = lightColour;
+		shader.lightDir = lightDir;
 		// TODO: part 3a
 
 		InitializeGraphics();
@@ -469,18 +478,11 @@ public:
 
 		//interfaceProxy.RotateXGlobalF(translationMatrix, G_DEGREE_TO_RADIAN_F(45), translationMatrix);
 
-		//interfaceProxy.InverseF(translationMatrix, viewMatrix);
 		GW::MATH::GVECTORF cameraPosition = { 0.75f, 0.25f, -1.5f, 1.0f };
-
-		// Define the target position (where the camera is looking)
-		GW::MATH::GVECTORF targetPosition = { 0.0f, 0.0f, 0.0f, 1.0f }; // Looking at the origin
-
-		// Define the up vector
-		GW::MATH::GVECTORF upVector = { 0.0f, 1.0f, 0.0f, 0.0f }; // Y-axis is up
-
-		// Create the view matrix using the look-at function
+		GW::MATH::GVECTORF targetPosition = { 0.0f, 0.0f, 0.0f, 1.0f }; 
+		GW::MATH::GVECTORF upVector = { 0.0f, 1.0f, 0.0f, 0.0f };
 		interfaceProxy.LookAtLHF(cameraPosition, targetPosition, upVector, viewMatrix);
-
+		shader.viewMatrix = viewMatrix;
 	}
 
 	void initializePerspectiveMatrix()
@@ -488,6 +490,7 @@ public:
 		float aspectRatio = 0.0f;
 		vlk.GetAspectRatio(aspectRatio);
 		interfaceProxy.ProjectionDirectXLHF(G_DEGREE_TO_RADIAN_F(65.0f), aspectRatio, 0.1, 100, leftHandedPerspectiveMatrix);
+		shader.perspectiveMatrix = leftHandedPerspectiveMatrix;
 	}
 
 private:
