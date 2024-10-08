@@ -14,12 +14,15 @@ struct VERTEX
 // TODO: Part 4b
 // TODO: Part 3g
 // TODO: Part 3h
-float4 main(VERTEX input: POSITION) : SV_POSITION 
+float4 main(VERTEX input: POSITION) : SV_POSITION
 {
 	// TODO: Part 1h
 	// TODO: Part 3g
+    float3 tempShift = input.pos;
+    tempShift.z += 0.75f;
+    tempShift.y -= 0.75f;
 	// TODO: Part 2f
 	// TODO: Part 3h
 	// TODO: Part 4b
-	return float4(input.pos, 1);
+    return float4(tempShift.xyz, 1);
 }
