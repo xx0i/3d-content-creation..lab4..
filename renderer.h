@@ -31,6 +31,8 @@ class Renderer
 	VkBuffer vertexHandle = nullptr;
 	VkDeviceMemory vertexData = nullptr;
 	// TODO: Part 1g
+	VkBuffer indexHandle = nullptr;
+	VkDeviceMemory indexData = nullptr;
 	// TODO: Part 2c
 	VkShaderModule vertexShader = nullptr;
 	VkShaderModule fragmentShader = nullptr;
@@ -72,6 +74,7 @@ private:
 		GetHandlesFromSurface();
 		InitializeVertexBuffer();
 		// TODO: Part 1g
+		InitializeIndexBuffer();
 		// TODO: Part 2d // TODO: Part 3d
 		CompileShaders();
 		InitializeGraphicsPipeline();
@@ -104,6 +107,15 @@ private:
 			VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &vertexHandle, &vertexData);
 		// Transfer triangle data to the vertex buffer. (staging would be prefered here)
 		GvkHelper::write_to_buffer(device, vertexData, data, sizeInBytes);
+	}
+
+	void InitializeIndexBuffer()
+	{
+		GvkHelper::create_buffer(physicalDevice, device, sizeof(FSLogo_indices),
+			VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+			VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &indexHandle, &indexData);
+		// Transfer triangle data to the vertex buffer. (staging would be prefered here)
+		GvkHelper::write_to_buffer(device, indexData, &FSLogo_indices[0], sizeof(FSLogo_indices));
 	}
 
 	void CompileShaders()
@@ -484,6 +496,8 @@ private:
 		vkDeviceWaitIdle(device);
 		// Release allocated buffers, shaders & pipeline
 		// TODO: Part 1g
+		vkDestroyBuffer(device, indexHandle, nullptr);
+		vkFreeMemory(device, indexData, nullptr);
 		// TODO: Part 2d
 		// TODO: Part 3d
 		vkDestroyBuffer(device, vertexHandle, nullptr);

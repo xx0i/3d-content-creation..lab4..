@@ -1,5 +1,12 @@
 // an ultra simple hlsl vertex shader
 // TODO: Part 1f
+struct VERTEX
+{
+    float3 pos : POSITION;
+    float2 uv : TEXCOORD;
+    float3 normal : NORMAL;
+};
+
 // TODO: Part 2c // TODO: Part 4d
 // TODO: Part 3b
 // TODO: Part 3c
@@ -7,12 +14,12 @@
 // TODO: Part 4b
 // TODO: Part 3g
 // TODO: Part 3h
-float4 main(float2 inputVertex : POSITION) : SV_POSITION 
+float4 main(VERTEX input: POSITION) : SV_POSITION 
 {
 	// TODO: Part 1h
 	// TODO: Part 3g
 	// TODO: Part 2f
 	// TODO: Part 3h
 	// TODO: Part 4b
-	return float4(inputVertex, 0, 1);
+	return float4(input.pos, 1);
 }
