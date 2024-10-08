@@ -114,7 +114,6 @@ private:
 		GvkHelper::create_buffer(physicalDevice, device, sizeof(FSLogo_indices),
 			VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 			VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &indexHandle, &indexData);
-		// Transfer triangle data to the vertex buffer. (staging would be prefered here)
 		GvkHelper::write_to_buffer(device, indexData, &FSLogo_indices[0], sizeof(FSLogo_indices));
 	}
 
@@ -444,6 +443,7 @@ public:
 		VkCommandBuffer commandBuffer = GetCurrentCommandBuffer();
 		SetUpPipeline(commandBuffer);
 		// TODO: Part 3i
+		vkCmdBindIndexBuffer(commandBuffer, indexHandle, 0, VK_INDEX_TYPE_UINT32);
 		// TODO: Part 1h
 		vkCmdDrawIndexed(commandBuffer, FSLogo_indexcount, 1, 0, 0, 0);
 		// TODO: Part 2e
@@ -467,10 +467,8 @@ private:
 		UpdateWindowDimensions(); // what is the current client area dimensions?
 		SetViewport(commandBuffer);
 		SetScissor(commandBuffer);
-
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-		//BindVertexBuffers(commandBuffer);
-		vkCmdBindIndexBuffer(commandBuffer, indexHandle, 0, VK_INDEX_TYPE_UINT32);
+		BindVertexBuffers(commandBuffer);
 	}
 
 	void SetViewport(const VkCommandBuffer& commandBuffer)
