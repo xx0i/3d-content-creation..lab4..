@@ -448,7 +448,7 @@ public:
 		vkCmdDrawIndexed(commandBuffer, FSLogo_indexcount, 1, 0, 0, 0);
 		// TODO: Part 2e
 		// TODO: Part 3f
-		vkCmdDraw(commandBuffer, FSLogo_vertexcount, 1, 0, 0); // TODO: Part 1d
+		//vkCmdDraw(commandBuffer, FSLogo_vertexcount, 1, 0, 0); // TODO: Part 1d
 	}
 
 private:
