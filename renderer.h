@@ -677,7 +677,7 @@ public:
 		// TODO: Part 2e
 		uint32_t activeImage;
 		vlk.GetSwapchainCurrentImage(activeImage);
-		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, &descriptorSets[activeImage], 0, 0);
+		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[activeImage], 0, 0);
 
 		// TODO: Part 1h
 		vkCmdDrawIndexed(commandBuffer, FSLogo_indexcount, 1, 0, 0, 0);
