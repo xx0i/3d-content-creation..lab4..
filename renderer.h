@@ -646,7 +646,7 @@ private:
 		// TODO: Part 2d // TODO: Part 3d
 		VkPipelineLayoutCreateInfo pipeline_layout_create_info = {};
 		pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipeline_layout_create_info.setLayoutCount = 2;
+		pipeline_layout_create_info.setLayoutCount = 1;
 		pipeline_layout_create_info.pSetLayouts = &descriptorSetLayout;
 		pipeline_layout_create_info.pushConstantRangeCount = 0;
 		pipeline_layout_create_info.pPushConstantRanges = nullptr;
