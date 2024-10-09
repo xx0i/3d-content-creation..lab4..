@@ -8,6 +8,11 @@ struct VERTEX
 };
 
 // TODO: Part 2c // TODO: Part 4d
+cbuffer VARIABLES
+{
+    matrix viewMatrix, perspectiveMatrix;
+    vector lightColour, lightDir;
+};
 // TODO: Part 3b
 // TODO: Part 3c
 // TODO: Part 4a

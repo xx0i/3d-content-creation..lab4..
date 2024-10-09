@@ -45,6 +45,12 @@ class Renderer
 	VkPipeline pipeline = nullptr;
 	VkPipelineLayout pipelineLayout = nullptr;
 	// TODO: Part 2d
+	std::vector<VkBuffer> uniformBufferHandle;
+	std::vector<VkDeviceMemory> uniformBufferData;
+	VkDescriptorSetLayout descriptorSetLayout = nullptr;
+	VkDescriptorPool descriptorPool = nullptr;
+	std::vector<VkDescriptorSet> descriptorSets = {};
+
 	// TODO: Part 3d
 	unsigned int windowWidth, windowHeight;
 
@@ -74,8 +80,28 @@ public:
 		shader.lightDir = lightDir;
 		// TODO: part 3a
 
+		createDescriptorLayout();
 		InitializeGraphics();
 		BindShutdownCallback();
+	}
+
+	void createDescriptorLayout()
+	{
+		VkDescriptorSetLayoutBinding binding = {};
+		binding.binding = 0;
+		binding.descriptorCount = 1;
+		binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		binding.pImmutableSamplers = nullptr;
+		binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+		layoutInfo.bindingCount = 1;
+		layoutInfo.flags = 0;
+		layoutInfo.pBindings = &binding;
+		layoutInfo.pNext = nullptr;
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+
+		vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout);
 	}
 
 private:
@@ -92,6 +118,10 @@ private:
 		// TODO: Part 1g
 		InitializeIndexBuffer();
 		// TODO: Part 2d // TODO: Part 3d
+		initializeUniformBuffer();
+		initializeDescriptorPool();
+		initializeDescriptorSets();
+		linkDescriptorSetUniformBuffer();
 		CompileShaders();
 		InitializeGraphicsPipeline();
 	}
@@ -131,6 +161,86 @@ private:
 			VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 			VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &indexHandle, &indexData);
 		GvkHelper::write_to_buffer(device, indexData, &FSLogo_indices[0], sizeof(FSLogo_indices));
+	}
+
+	//part 2d
+	void initializeUniformBuffer()
+	{
+		unsigned int bufferSize = sizeof(shaderVars);  //size of the uniform data
+
+		//gets the number of active frames
+		uint32_t imageCount;
+		vlk.GetSwapchainImageCount(imageCount);
+
+		//resizes the vectors for the uniform buffers for each frame
+		uniformBufferHandle.resize(imageCount);
+		uniformBufferData.resize(imageCount);
+
+		for (size_t i = 0; i < imageCount; i++) //loops through each active frame and creates a buffer for each
+		{
+			GvkHelper::create_buffer(physicalDevice, device, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &uniformBufferHandle[i], &uniformBufferData[i]);
+			GvkHelper::write_to_buffer(device, uniformBufferData[i], &shader, bufferSize);
+		}
+	}
+
+	void initializeDescriptorPool()
+	{
+		VkDescriptorPoolSize poolSize = {};
+		poolSize.descriptorCount = uniformBufferHandle.size();
+		poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+
+		VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
+		descriptorPoolInfo.flags = 0;
+		descriptorPoolInfo.maxSets = uniformBufferHandle.size();
+		descriptorPoolInfo.pNext = nullptr;
+		descriptorPoolInfo.poolSizeCount = 1;
+		descriptorPoolInfo.pPoolSizes = &poolSize;
+		descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+
+		vkCreateDescriptorPool(device, &descriptorPoolInfo, nullptr, &descriptorPool);
+	}
+
+	void initializeDescriptorSets()
+	{
+		VkDescriptorSetAllocateInfo descriptorAllocateInfo = {};
+		descriptorAllocateInfo.descriptorPool = descriptorPool;
+		descriptorAllocateInfo.descriptorSetCount = 1;
+		descriptorAllocateInfo.pNext = nullptr;
+		descriptorAllocateInfo.pSetLayouts = &descriptorSetLayout;
+		descriptorAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+
+		descriptorSets.resize(uniformBufferHandle.size());
+
+		for (int i = 0; i < uniformBufferData.size(); i++)
+		{
+			vkAllocateDescriptorSets(device, &descriptorAllocateInfo, &descriptorSets[i]);
+		}
+	}
+
+	void linkDescriptorSetUniformBuffer()
+	{
+		for (int i = 0; i < uniformBufferData.size(); i++)
+		{
+			VkDescriptorBufferInfo descriptorBuffer = {};
+			descriptorBuffer.buffer = uniformBufferHandle[i];
+			descriptorBuffer.offset = 0;
+			descriptorBuffer.range = sizeof(shaderVars);
+
+			VkWriteDescriptorSet writeDescriptor = {};
+			writeDescriptor.descriptorCount = 1;
+			writeDescriptor.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			writeDescriptor.dstArrayElement = 0;
+			writeDescriptor.dstBinding = 0;
+			writeDescriptor.dstSet = descriptorSets[i];
+			writeDescriptor.pBufferInfo = &descriptorBuffer;
+			writeDescriptor.pImageInfo = nullptr;
+			writeDescriptor.pNext = nullptr;
+			writeDescriptor.pTexelBufferView = nullptr;
+			writeDescriptor.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+
+			vkUpdateDescriptorSets(device, 1, &writeDescriptor, 0, nullptr);
+		}
 	}
 
 	void CompileShaders()
@@ -432,8 +542,8 @@ private:
 		// TODO: Part 2d // TODO: Part 3d
 		VkPipelineLayoutCreateInfo pipeline_layout_create_info = {};
 		pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipeline_layout_create_info.setLayoutCount = 0;
-		pipeline_layout_create_info.pSetLayouts = VK_NULL_HANDLE;
+		pipeline_layout_create_info.setLayoutCount = 1;
+		pipeline_layout_create_info.pSetLayouts = &descriptorSetLayout;;
 		pipeline_layout_create_info.pushConstantRangeCount = 0;
 		pipeline_layout_create_info.pPushConstantRanges = nullptr;
 
@@ -478,9 +588,9 @@ public:
 
 		//interfaceProxy.RotateXGlobalF(translationMatrix, G_DEGREE_TO_RADIAN_F(45), translationMatrix);
 
-		GW::MATH::GVECTORF cameraPosition = { 0.75f, 0.25f, -1.5f, 1.0f };
-		GW::MATH::GVECTORF targetPosition = { 0.0f, 0.0f, 0.0f, 1.0f }; 
-		GW::MATH::GVECTORF upVector = { 0.0f, 1.0f, 0.0f, 0.0f };
+		GW::MATH::GVECTORF cameraPosition = { 0.75f, 0.25f, -1.5f };
+		GW::MATH::GVECTORF targetPosition = { 0.15f, 0.75f, 0.0f }; 
+		GW::MATH::GVECTORF upVector = { 0.0f, 1.0f, 0.0f };
 		interfaceProxy.LookAtLHF(cameraPosition, targetPosition, upVector, viewMatrix);
 		shader.viewMatrix = viewMatrix;
 	}
@@ -540,7 +650,20 @@ private:
 		// TODO: Part 1g
 		vkDestroyBuffer(device, indexHandle, nullptr);
 		vkFreeMemory(device, indexData, nullptr);
+
 		// TODO: Part 2d
+		for (int i = 0; i < uniformBufferHandle.size(); i++)
+		{
+			vkDestroyBuffer(device, uniformBufferHandle[i], nullptr);
+
+			vkFreeMemory(device, uniformBufferData[i], nullptr);
+		}
+		uniformBufferHandle.clear();
+		uniformBufferData.clear();
+
+		vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
+		vkDestroyDescriptorPool(device, descriptorPool, nullptr);
+
 		// TODO: Part 3d
 		vkDestroyBuffer(device, vertexHandle, nullptr);
 		vkFreeMemory(device, vertexData, nullptr);
