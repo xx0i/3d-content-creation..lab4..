@@ -573,14 +573,16 @@ public:
 		// TODO: Part 3i
 		vkCmdBindIndexBuffer(commandBuffer, indexHandle, 0, VK_INDEX_TYPE_UINT32);
 
+		// TODO: Part 1h
+		vkCmdDrawIndexed(commandBuffer, FSLogo_indexcount, 1, 0, 0, 0);
+
 		// TODO: Part 2e
 		uint32_t activeImage;
 		vlk.GetSwapchainCurrentImage(activeImage);
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[activeImage], 0, 0);
-
-		// TODO: Part 1h
-		vkCmdDrawIndexed(commandBuffer, FSLogo_indexcount, 1, 0, 0, 0);
+		
 		// TODO: Part 3f
+		
 		//vkCmdDraw(commandBuffer, FSLogo_vertexcount, 1, 0, 0); // TODO: Part 1d
 	}
 

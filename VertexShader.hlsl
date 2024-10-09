@@ -23,14 +23,11 @@ float4 main(VERTEX input: POSITION) : SV_POSITION
 {
 	// TODO: Part 1h
 	// TODO: Part 3g
-    //float3 tempShift = input.pos;
-    //tempShift.z += 0.75f;
-    //tempShift.y -= 0.75f;
-    
+    float3 tempShift = input.pos;
+    tempShift.z += 0.75f;
+    tempShift.y -= 0.75f;
 	// TODO: Part 2f
-    matrix result = mul(viewMatrix, perspectiveMatrix);
-    float4 pos = mul(float4(input.pos.xyz, 1), result);
 	// TODO: Part 3h
 	// TODO: Part 4b
-    return pos;
+    return float4(tempShift.xyz, 1);
 }
