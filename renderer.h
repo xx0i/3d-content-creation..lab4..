@@ -244,7 +244,7 @@ private:
 	//part 3d
 	void initializeStorageBuffer()
 	{
-		unsigned int bufferSize = 2 * (sizeof(instanceData) * instances.size());  //size of the storage data
+		unsigned int bufferSize = 8 * (sizeof(instanceData) * instances.size());  //size of the storage data
 
 		//gets the number of active frames
 		uint32_t imageCount;
