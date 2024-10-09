@@ -26,7 +26,7 @@ class Renderer
 	struct instanceData
 	{
 		GW::MATH::GMATRIXF worldMatrix;
-		OBJ_MATERIAL material;
+		OBJ_ATTRIBUTES material;
 	};
 
 	// proxy handles
@@ -100,7 +100,7 @@ public:
 		{
 			instanceData temp{};
 			temp.worldMatrix = GW::MATH::GIdentityMatrixF;
-			temp.material = FSLogo_materials[i];
+			temp.material = FSLogo_materials[i].attrib;
 			instances.push_back(temp);
 		}
 

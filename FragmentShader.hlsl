@@ -7,26 +7,21 @@ cbuffer VARIABLES
 };
 
 // TODO: Part 3b
-struct OBJ_MATERIAL
-{
-    float4 data1; // 16 bytes
-    float4 data2; // 16 bytes
-    float4 data3; // 16 bytes
-    float4 data4; // 16 bytes
-    float4 data5; // 16 bytes
-    float4 data6; // 16 bytes
-    float4 data7; // 16 bytes
-    float4 data8; // 16 bytes
-    float4 data9; // 16 bytes
-    float4 data10; // 16 bytes
-    float4 data11; // 16 bytes -> total 176
-};
-
 struct INSTANCE_DATA
 {
     matrix worldMatrix;
-    OBJ_MATERIAL material;
+    float3 Kd; // diffuse reflectivity
+    float d; // dissolve (transparency) 
+    float3 Ks; // specular reflectivity
+    float Ns; // specular exponent
+    float3 Ka; // ambient reflectivity
+    float sharpness; // local reflection map sharpness
+    float3 Tf; // transmission filter
+    float Ni; // optical density (index of refraction)
+    float3 Ke; // emissive reflectivity
+	unsigned int illum; // illumination model
 };
+
 // TODO: Part 3c
 StructuredBuffer<INSTANCE_DATA> drawInfo : register(b1, space0);
 
