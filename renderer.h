@@ -79,11 +79,40 @@ public:
 		// TODO: Part 2b // TODO: Part 4d
 		shader.lightColour = lightColour;
 		shader.lightDir = lightDir;
+
+		// TODO: Part 2a
+		initializeViewMatrix();
+		initializePerspectiveMatrix();
+
 		// TODO: part 3a
 
 		createDescriptorLayout();
 		InitializeGraphics();
 		BindShutdownCallback();
+	}
+
+	void initializeViewMatrix()
+	{
+		//GW::MATH::GMATRIXF translationMatrix = GW::MATH::GIdentityMatrixF;
+		//GW::MATH::GVECTORF translationVector = { 0.75f, 0.25f, -1.5f, 1.0f };
+		//interfaceProxy.TranslateGlobalF(translationMatrix, translationVector, translationMatrix);
+		//interfaceProxy.RotateYGlobalF(translationMatrix, G_DEGREE_TO_RADIAN_F(25), translationMatrix);
+
+		//interfaceProxy.RotateXGlobalF(translationMatrix, G_DEGREE_TO_RADIAN_F(45), translationMatrix);
+
+		GW::MATH::GVECTORF cameraPosition = { 0.75f, 0.25f, -1.5f };
+		GW::MATH::GVECTORF targetPosition = { 0.15f, 0.75f, 0.0f };
+		GW::MATH::GVECTORF upVector = { 0.0f, 1.0f, 0.0f };
+		interfaceProxy.LookAtLHF(cameraPosition, targetPosition, upVector, viewMatrix);
+		shader.viewMatrix = viewMatrix;
+	}
+
+	void initializePerspectiveMatrix()
+	{
+		float aspectRatio = 0.0f;
+		vlk.GetAspectRatio(aspectRatio);
+		interfaceProxy.ProjectionDirectXLHF(G_DEGREE_TO_RADIAN_F(65.0f), aspectRatio, 0.1, 100, leftHandedPerspectiveMatrix);
+		shader.perspectiveMatrix = leftHandedPerspectiveMatrix;
 	}
 
 	void createDescriptorLayout()
@@ -579,30 +608,6 @@ public:
 		vkCmdDrawIndexed(commandBuffer, FSLogo_indexcount, 1, 0, 0, 0);
 		// TODO: Part 3f
 		//vkCmdDraw(commandBuffer, FSLogo_vertexcount, 1, 0, 0); // TODO: Part 1d
-	}
-
-	void initializeViewMatrix()
-	{
-		//GW::MATH::GMATRIXF translationMatrix = GW::MATH::GIdentityMatrixF;
-		//GW::MATH::GVECTORF translationVector = { 0.75f, 0.25f, -1.5f, 1.0f };
-		//interfaceProxy.TranslateGlobalF(translationMatrix, translationVector, translationMatrix);
-		//interfaceProxy.RotateYGlobalF(translationMatrix, G_DEGREE_TO_RADIAN_F(25), translationMatrix);
-
-		//interfaceProxy.RotateXGlobalF(translationMatrix, G_DEGREE_TO_RADIAN_F(45), translationMatrix);
-
-		GW::MATH::GVECTORF cameraPosition = { 0.75f, 0.25f, -1.5f };
-		GW::MATH::GVECTORF targetPosition = { 0.15f, 0.75f, 0.0f }; 
-		GW::MATH::GVECTORF upVector = { 0.0f, 1.0f, 0.0f };
-		interfaceProxy.LookAtLHF(cameraPosition, targetPosition, upVector, viewMatrix);
-		shader.viewMatrix = viewMatrix;
-	}
-
-	void initializePerspectiveMatrix()
-	{
-		float aspectRatio = 0.0f;
-		vlk.GetAspectRatio(aspectRatio);
-		interfaceProxy.ProjectionDirectXLHF(G_DEGREE_TO_RADIAN_F(65.0f), aspectRatio, 0.1, 100, leftHandedPerspectiveMatrix);
-		shader.perspectiveMatrix = leftHandedPerspectiveMatrix;
 	}
 
 private:
