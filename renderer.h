@@ -677,7 +677,7 @@ public:
 		// TODO: Part 3f
 		for (int i = 0; i < FSLogo_meshcount; i++)
 		{
-			vkCmdDrawIndexed(commandBuffer, FSLogo_meshes[i].indexCount, 1, 0, FSLogo_meshes[i].indexOffset, 0);
+			vkCmdDrawIndexed(commandBuffer, FSLogo_meshes[i].indexCount, 1, FSLogo_meshes[i].indexOffset, 0, 0);
 		}
 		//vkCmdDraw(commandBuffer, FSLogo_vertexcount, 1, 0, 0); // TODO: Part 1d
 	}
