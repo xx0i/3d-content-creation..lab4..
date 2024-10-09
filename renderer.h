@@ -282,7 +282,7 @@ private:
 	{
 		VkDescriptorSetAllocateInfo descriptorAllocateInfo = {};
 		descriptorAllocateInfo.descriptorPool = descriptorPool;
-		descriptorAllocateInfo.descriptorSetCount = descriptorSets.size();
+		descriptorAllocateInfo.descriptorSetCount = 1;
 		descriptorAllocateInfo.pNext = nullptr;
 		descriptorAllocateInfo.pSetLayouts = &descriptorSetLayout;
 		descriptorAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -307,7 +307,7 @@ private:
 			VkDescriptorBufferInfo storageDescriptorBuffer = {};
 			storageDescriptorBuffer.buffer = storageBufferHandle[i];
 			storageDescriptorBuffer.offset = 0;
-			storageDescriptorBuffer.range = sizeof(instanceData);
+			storageDescriptorBuffer.range = sizeof(instanceData) * instances.size();
 
 			VkWriteDescriptorSet writeUniformDescriptor = {};
 			writeUniformDescriptor.descriptorCount = 1;
