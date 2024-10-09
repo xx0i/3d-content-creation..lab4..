@@ -330,9 +330,9 @@ private:
 
 
 			VkWriteDescriptorSet writeStorageDescriptor = {};
-			writeStorageDescriptor.descriptorCount = 2;
+			writeStorageDescriptor.descriptorCount = 1;
 			writeStorageDescriptor.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-			writeStorageDescriptor.dstArrayElement = 0;
+			writeStorageDescriptor.dstArrayElement = 1;
 			writeStorageDescriptor.dstBinding = 1;
 			writeStorageDescriptor.dstSet = descriptorSets[i];
 			writeStorageDescriptor.pBufferInfo = &storageDescriptorBuffer;
