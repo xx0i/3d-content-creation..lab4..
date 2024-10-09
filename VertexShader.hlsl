@@ -43,17 +43,28 @@ StructuredBuffer<INSTANCE_DATA> drawInfo : register(b1, space0);
 // TODO: Part 4b
 // TODO: Part 3g
 // TODO: Part 3h
-float4 main(VERTEX input: POSITION) : SV_POSITION
+struct OUTPUT
+{
+    float4 position : SV_POSITION;
+    nointerpolation uint index : Index;
+};
+
+float4 main(VERTEX input, uint instanceID : SV_InstanceID) : SV_POSITION
 {
 	// TODO: Part 1h
-	// TODO: Part 3g
     //float3 tempShift = input.pos;
     //tempShift.z += 0.75f;
     //tempShift.y -= 0.75f;
-	// TODO: Part 2f
-    float4 result = mul(float4(input.pos.xyz, 1), viewMatrix);
+	// TODO: Part 3g
+    matrix worldMatrix = drawInfo[instanceID].worldMatrix;
+    float4 result = mul(float4(input.pos.xyz, 1), worldMatrix);
+    // TODO: Part 2f
+    result = mul(result, viewMatrix);
     float4 pos = mul(result, perspectiveMatrix);
 	// TODO: Part 3h
+    OUTPUT output;
+    output.position = pos;
+    output.index = instanceID;
 	// TODO: Part 4b
-    return pos;
+    return output;
 }

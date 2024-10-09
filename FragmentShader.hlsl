@@ -35,10 +35,16 @@ StructuredBuffer<INSTANCE_DATA> drawInfo : register(b1, space0);
 // TODO: Part 4b
 // TODO: Part 3g
 // TODO: Part 3h
-float4 main() : SV_TARGET
+struct OUTPUT
+{
+    float4 position : SV_POSITION;
+    nointerpolation uint index : Index;
+};
+
+float4 main(OUTPUT input) : SV_TARGET
 {
 	// TODO: Part 3e
-    float4 diffuseColour = float4(drawInfo[0].material.Kd, 1);
+    float4 diffuseColour = float4(drawInfo[input.index].material.Kd, 1);
     return diffuseColour;
 	// TODO: Part 3h
     //return float4(0.62f, 0.50f, 0.50f, 0); // TODO: Part 1a (optional)
