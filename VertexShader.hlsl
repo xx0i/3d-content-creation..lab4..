@@ -51,7 +51,7 @@ float4 main(VERTEX input: POSITION) : SV_POSITION
     //tempShift.z += 0.75f;
     //tempShift.y -= 0.75f;
 	// TODO: Part 2f
-    float4 result = mul(float4(input.pos.xyz, 1), viewMatrix);
+    float4 result = mul(float4(input.pos.xyz, 0), viewMatrix);
     float4 pos = mul(result, perspectiveMatrix);
 	// TODO: Part 3h
 	// TODO: Part 4b
