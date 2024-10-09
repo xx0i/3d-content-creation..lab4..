@@ -72,6 +72,7 @@ public:
 		win = _win;
 		vlk = _vlk;
 		UpdateWindowDimensions();
+		GetHandlesFromSurface();
 
 		// TODO: Part 2a
 		interfaceProxy.Create();
@@ -113,7 +114,6 @@ private:
 
 	void InitializeGraphics()
 	{
-		GetHandlesFromSurface();
 		InitializeVertexBuffer();
 		// TODO: Part 1g
 		InitializeIndexBuffer();
