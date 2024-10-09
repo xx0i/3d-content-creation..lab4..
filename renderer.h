@@ -673,8 +673,12 @@ public:
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[activeImage], 0, 0);
 
 		// TODO: Part 1h
-		vkCmdDrawIndexed(commandBuffer, FSLogo_indexcount, 1, 0, 0, 0);
+		//vkCmdDrawIndexed(commandBuffer, FSLogo_indexcount, 1, 0, 0, 0);
 		// TODO: Part 3f
+		for (int i = 0; i < FSLogo_meshcount; i++)
+		{
+			vkCmdDrawIndexed(commandBuffer, FSLogo_meshes[i].indexCount, 1, 0, 0, 0);
+		}
 		//vkCmdDraw(commandBuffer, FSLogo_vertexcount, 1, 0, 0); // TODO: Part 1d
 	}
 
