@@ -19,7 +19,7 @@ struct INSTANCE_DATA
     float3 Tf; // transmission filter
     float Ni; // optical density (index of refraction)
     float3 Ke; // emissive reflectivity
-	unsigned int illum; // illumination model
+	uint illum; // illumination model
 };
 
 // TODO: Part 3c
@@ -32,8 +32,10 @@ StructuredBuffer<INSTANCE_DATA> drawInfo : register(b1, space0);
 float4 main() : SV_TARGET
 {
 	// TODO: Part 3e
+    float4 diffuseColour = float4(drawInfo[0].Kd, 1);
+    return diffuseColour;
 	// TODO: Part 3h
-    return float4(0.62f, 0.50f, 0.50f, 0); // TODO: Part 1a (optional)
+    //return float4(0.62f, 0.50f, 0.50f, 0); // TODO: Part 1a (optional)
 	// TODO: Part 4c
 	// TODO: Part 4d (half-vector or reflect method, your choice)
-}
+    }

@@ -27,7 +27,7 @@ struct INSTANCE_DATA
     float3 Tf; // transmission filter
     float Ni; // optical density (index of refraction)
     float3 Ke; // emissive reflectivity
-    unsigned int illum; // illumination model
+    uint illum; // illumination model
 };
 
 // TODO: Part 3c
