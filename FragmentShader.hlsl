@@ -7,9 +7,8 @@ cbuffer VARIABLES
 };
 
 // TODO: Part 3b
-struct INSTANCE_DATA
+struct OBJ_ATTRIB
 {
-    matrix worldMatrix;
     float3 Kd; // diffuse reflectivity
     float d; // dissolve (transparency) 
     float3 Ks; // specular reflectivity
@@ -19,7 +18,14 @@ struct INSTANCE_DATA
     float3 Tf; // transmission filter
     float Ni; // optical density (index of refraction)
     float3 Ke; // emissive reflectivity
-	uint illum; // illumination model
+    uint illum; // illumination model
+};
+
+
+struct INSTANCE_DATA
+{
+    matrix worldMatrix;
+    OBJ_ATTRIB material;
 };
 
 // TODO: Part 3c
@@ -32,7 +38,7 @@ StructuredBuffer<INSTANCE_DATA> drawInfo : register(b1, space0);
 float4 main() : SV_TARGET
 {
 	// TODO: Part 3e
-    float4 diffuseColour = float4(drawInfo[0].Kd, 1);
+    float4 diffuseColour = float4(drawInfo[0].material.Kd, 1);
     return diffuseColour;
 	// TODO: Part 3h
     //return float4(0.62f, 0.50f, 0.50f, 0); // TODO: Part 1a (optional)

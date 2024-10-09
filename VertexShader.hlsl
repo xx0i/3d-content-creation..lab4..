@@ -15,9 +15,8 @@ cbuffer VARIABLES
     vector lightColour, lightDir;
 };
 // TODO: Part 3b
-struct INSTANCE_DATA
+struct OBJ_ATTRIB
 {
-    matrix worldMatrix;
     float3 Kd; // diffuse reflectivity
     float d; // dissolve (transparency) 
     float3 Ks; // specular reflectivity
@@ -30,8 +29,15 @@ struct INSTANCE_DATA
     uint illum; // illumination model
 };
 
+
+struct INSTANCE_DATA
+{
+    matrix worldMatrix;
+    OBJ_ATTRIB material;
+};
+
 // TODO: Part 3c
-StructuredBuffer<INSTANCE_DATA> drawInfo : register(b0, space0);
+StructuredBuffer<INSTANCE_DATA> drawInfo : register(b1, space0);
 
 // TODO: Part 4a
 // TODO: Part 4b
