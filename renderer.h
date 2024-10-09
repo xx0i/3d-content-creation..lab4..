@@ -23,7 +23,12 @@ class Renderer
 		GW::MATH::GVECTORF lightColour, lightDir;
 	};
 	// TODO: Part 3a
-	
+	struct instanceData
+	{
+		GW::MATH::GMATRIXF worldMatrix;
+		OBJ_MATERIAL material;
+	};
+
 	// proxy handles
 	GW::SYSTEM::GWindow win;
 	GW::GRAPHICS::GVulkanSurface vlk;
@@ -65,6 +70,8 @@ class Renderer
 	shaderVars shader = {};
 	
 	// TODO: Part 3a
+	std::vector<instanceData> instances;
+
 public:
 
 	Renderer(GW::SYSTEM::GWindow _win, GW::GRAPHICS::GVulkanSurface _vlk)
@@ -85,6 +92,14 @@ public:
 		initializePerspectiveMatrix();
 
 		// TODO: part 3a
+
+		for (int i = 0; i < FSLogo_meshcount; i++)
+		{
+			instanceData temp{};
+			temp.worldMatrix = GW::MATH::GIdentityMatrixF;
+			temp.material = FSLogo_materials[i];
+			instances.push_back(temp);
+		}
 
 		createDescriptorLayout();
 		InitializeGraphics();
