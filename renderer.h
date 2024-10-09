@@ -472,7 +472,7 @@ private:
 
 		CreatePipelineLayout();
 
-		// Pipeline State... (FINALLY) 
+		// Pipeline State...(FINALLY) 
 		VkGraphicsPipelineCreateInfo pipeline_create_info = {};
 		pipeline_create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 		pipeline_create_info.stageCount = 2;
