@@ -49,7 +49,7 @@ struct OUTPUT
     nointerpolation uint index : Index;
 };
 
-float4 main(VERTEX input, uint instanceID : SV_InstanceID) : SV_POSITION
+OUTPUT main(VERTEX input, uint instanceID : SV_InstanceID) : SV_POSITION
 {
 	// TODO: Part 1h
     //float3 tempShift = input.pos;

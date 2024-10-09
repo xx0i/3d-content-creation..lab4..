@@ -75,6 +75,12 @@ class Renderer
 	// TODO: Part 3a
 	std::vector<instanceData> instances;
 
+	GW::MATH::GMATRIXF identityMatrix = GW::MATH::GIdentityMatrixF;
+	GW::MATH::GMATRIXF yRotationMatrix;
+
+	// TODO: Part 2b
+	std::chrono::high_resolution_clock::time_point startTime;
+
 public:
 
 	Renderer(GW::SYSTEM::GWindow _win, GW::GRAPHICS::GVulkanSurface _vlk)
@@ -86,6 +92,7 @@ public:
 
 		// TODO: Part 2a
 		interfaceProxy.Create();
+		startTime = std::chrono::high_resolution_clock::now();
 		// TODO: Part 2b // TODO: Part 4d
 		shader.lightColour = lightColour;
 		shader.lightDir = lightDir;
@@ -662,9 +669,24 @@ public:
 	void Render()
 	{
 		// TODO: Part 3i
+		std::chrono::high_resolution_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
+		float elapsedTime = std::chrono::duration<float>(currentTime - startTime).count();
+		float rotationSpeed = -0.75f; // Rotation speed in radians per second
+		float radians = elapsedTime * rotationSpeed;
+		interfaceProxy.RotateYLocalF(identityMatrix, radians, yRotationMatrix);
+		instances[1].worldMatrix = yRotationMatrix;
+
 		VkCommandBuffer commandBuffer = GetCurrentCommandBuffer();
 		SetUpPipeline(commandBuffer);
 		// TODO: Part 3i
+//		GvkHelper::write_to_buffer(device, storageBufferData[1], &instances[1], sizeof(instanceData) * FSLogo_meshcount);
+		//GvkHelper::write_to_buffer(
+		//	device,                             // Vulkan device
+		//	instanceBufferMemory,               // Buffer memory where instance data is stored
+		//	&instanceData,                      // Pointer to your updated instance data array
+		//	sizeof(INSTANCE_DATA) * FSLogo_meshcount  // Size of the data to update
+		//);
+
 		vkCmdBindIndexBuffer(commandBuffer, indexHandle, 0, VK_INDEX_TYPE_UINT32);
 
 		// TODO: Part 2e
