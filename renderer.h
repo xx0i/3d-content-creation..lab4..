@@ -282,7 +282,7 @@ private:
 	{
 		VkDescriptorSetAllocateInfo descriptorAllocateInfo = {};
 		descriptorAllocateInfo.descriptorPool = descriptorPool;
-		descriptorAllocateInfo.descriptorSetCount = 1;
+		descriptorAllocateInfo.descriptorSetCount = descriptorSets.size();
 		descriptorAllocateInfo.pNext = nullptr;
 		descriptorAllocateInfo.pSetLayouts = &descriptorSetLayout;
 		descriptorAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
