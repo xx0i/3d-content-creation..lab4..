@@ -57,6 +57,9 @@ class Renderer
 	std::vector<VkDescriptorSet> descriptorSets = {};
 
 	// TODO: Part 3d
+	std::vector<VkBuffer> storageBufferHandle;
+	std::vector<VkDeviceMemory> storageBufferData;
+
 	unsigned int windowWidth, windowHeight;
 
 	// TODO: Part 2a
@@ -132,17 +135,26 @@ public:
 
 	void createDescriptorLayout()
 	{
-		VkDescriptorSetLayoutBinding binding = {};
-		binding.binding = 0;
-		binding.descriptorCount = 1;
-		binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		binding.pImmutableSamplers = nullptr;
-		binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+		VkDescriptorSetLayoutBinding uniformBinding = {};
+		uniformBinding.binding = 0;
+		uniformBinding.descriptorCount = 1;
+		uniformBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		uniformBinding.pImmutableSamplers = nullptr;
+		uniformBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		VkDescriptorSetLayoutBinding storageBinding = {};
+		storageBinding.binding = 1;
+		storageBinding.descriptorCount = 1;
+		storageBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+		storageBinding.pImmutableSamplers = nullptr;
+		storageBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uniformBinding, storageBinding };
 
 		VkDescriptorSetLayoutCreateInfo layoutInfo = {};
-		layoutInfo.bindingCount = 1;
+		layoutInfo.bindingCount = 2;
 		layoutInfo.flags = 0;
-		layoutInfo.pBindings = &binding;
+		layoutInfo.pBindings = bindings.data();
 		layoutInfo.pNext = nullptr;
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 
@@ -163,6 +175,7 @@ private:
 		InitializeIndexBuffer();
 		// TODO: Part 2d // TODO: Part 3d
 		initializeUniformBuffer();
+		initializeStorageBuffer();
 		initializeDescriptorPool();
 		initializeDescriptorSets();
 		linkDescriptorSetUniformBuffer();
@@ -228,18 +241,45 @@ private:
 		}
 	}
 
+	//part 3d
+	void initializeStorageBuffer()
+	{
+		unsigned int bufferSize = sizeof(instanceData);  //size of the storage data
+
+		//gets the number of active frames
+		uint32_t imageCount;
+		vlk.GetSwapchainImageCount(imageCount);
+
+		//resizes the vectors for the uniform buffers for each frame
+		storageBufferHandle.resize(imageCount);
+		storageBufferData.resize(imageCount);
+
+		for (size_t i = 0; i < imageCount; i++) //loops through each active frame and creates a buffer for each
+		{
+			GvkHelper::create_buffer(physicalDevice, device, bufferSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &storageBufferHandle[i], &storageBufferData[i]);
+			GvkHelper::write_to_buffer(device, storageBufferData[i], &instances, bufferSize);
+		}
+	}
+
 	void initializeDescriptorPool()
 	{
-		VkDescriptorPoolSize poolSize = {};
-		poolSize.descriptorCount = uniformBufferHandle.size();
-		poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		VkDescriptorPoolSize uniformPoolSize = {};
+		uniformPoolSize.descriptorCount = uniformBufferHandle.size();
+		uniformPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+
+		VkDescriptorPoolSize storagePoolSize = {};
+		storagePoolSize.descriptorCount = storageBufferHandle.size();
+		storagePoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+
+		std::array<VkDescriptorPoolSize, 2> poolSizes = { uniformPoolSize, storagePoolSize };
 
 		VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
 		descriptorPoolInfo.flags = 0;
 		descriptorPoolInfo.maxSets = uniformBufferHandle.size();
 		descriptorPoolInfo.pNext = nullptr;
-		descriptorPoolInfo.poolSizeCount = 1;
-		descriptorPoolInfo.pPoolSizes = &poolSize;
+		descriptorPoolInfo.poolSizeCount = 2;
+		descriptorPoolInfo.pPoolSizes = poolSizes.data();
 		descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 
 		vkCreateDescriptorPool(device, &descriptorPoolInfo, nullptr, &descriptorPool);
@@ -266,24 +306,44 @@ private:
 	{
 		for (int i = 0; i < uniformBufferData.size(); i++)
 		{
-			VkDescriptorBufferInfo descriptorBuffer = {};
-			descriptorBuffer.buffer = uniformBufferHandle[i];
-			descriptorBuffer.offset = 0;
-			descriptorBuffer.range = sizeof(shaderVars);
+			VkDescriptorBufferInfo uniformDescriptorBuffer = {};
+			uniformDescriptorBuffer.buffer = uniformBufferHandle[i];
+			uniformDescriptorBuffer.offset = 0;
+			uniformDescriptorBuffer.range = sizeof(shaderVars);
 
-			VkWriteDescriptorSet writeDescriptor = {};
-			writeDescriptor.descriptorCount = 1;
-			writeDescriptor.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			writeDescriptor.dstArrayElement = 0;
-			writeDescriptor.dstBinding = 0;
-			writeDescriptor.dstSet = descriptorSets[i];
-			writeDescriptor.pBufferInfo = &descriptorBuffer;
-			writeDescriptor.pImageInfo = nullptr;
-			writeDescriptor.pNext = nullptr;
-			writeDescriptor.pTexelBufferView = nullptr;
-			writeDescriptor.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			VkDescriptorBufferInfo storageDescriptorBuffer = {};
+			storageDescriptorBuffer.buffer = storageBufferHandle[i];
+			storageDescriptorBuffer.offset = 0;
+			storageDescriptorBuffer.range = sizeof(instanceData);
 
-			vkUpdateDescriptorSets(device, 1, &writeDescriptor, 0, nullptr);
+			VkWriteDescriptorSet writeUniformDescriptor = {};
+			writeUniformDescriptor.descriptorCount = 1;
+			writeUniformDescriptor.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			writeUniformDescriptor.dstArrayElement = 0;
+			writeUniformDescriptor.dstBinding = 0;
+			writeUniformDescriptor.dstSet = descriptorSets[i];
+			writeUniformDescriptor.pBufferInfo = &uniformDescriptorBuffer;
+			writeUniformDescriptor.pImageInfo = nullptr;
+			writeUniformDescriptor.pNext = nullptr;
+			writeUniformDescriptor.pTexelBufferView = nullptr;
+			writeUniformDescriptor.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+
+
+			VkWriteDescriptorSet writeStorageDescriptor = {};
+			writeStorageDescriptor.descriptorCount = 1;
+			writeStorageDescriptor.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+			writeStorageDescriptor.dstArrayElement = 0;
+			writeStorageDescriptor.dstBinding = 1;
+			writeStorageDescriptor.dstSet = descriptorSets[i];
+			writeStorageDescriptor.pBufferInfo = &storageDescriptorBuffer;
+			writeStorageDescriptor.pImageInfo = nullptr;
+			writeStorageDescriptor.pNext = nullptr;
+			writeStorageDescriptor.pTexelBufferView = nullptr;
+			writeStorageDescriptor.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+
+			std::array<VkWriteDescriptorSet, 2> writeDescriptors = { writeUniformDescriptor, writeStorageDescriptor };
+
+			vkUpdateDescriptorSets(device, 2, writeDescriptors.data(), 0, nullptr);
 		}
 	}
 
@@ -687,6 +747,14 @@ private:
 		vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 
 		// TODO: Part 3d
+		for (int i = 0; i < storageBufferHandle.size(); i++) 
+		{
+			vkDestroyBuffer(device, storageBufferHandle[i], nullptr);
+			vkFreeMemory(device, storageBufferData[i], nullptr);
+		}
+		storageBufferHandle.clear();
+		storageBufferData.clear();
+
 		vkDestroyBuffer(device, vertexHandle, nullptr);
 		vkFreeMemory(device, vertexData, nullptr);
 		vkDestroyShaderModule(device, vertexShader, nullptr);
