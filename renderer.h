@@ -314,7 +314,7 @@ private:
 			VkDescriptorBufferInfo storageDescriptorBuffer = {};
 			storageDescriptorBuffer.buffer = storageBufferHandle[i];
 			storageDescriptorBuffer.offset = 0;
-			storageDescriptorBuffer.range = sizeof(instanceData) * FSLogo_indexcount;
+			storageDescriptorBuffer.range = sizeof(instanceData);
 
 			VkWriteDescriptorSet writeUniformDescriptor = {};
 			writeUniformDescriptor.descriptorCount = 1;

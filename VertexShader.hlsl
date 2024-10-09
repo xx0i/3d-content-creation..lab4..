@@ -31,7 +31,7 @@ struct INSTANCE_DATA
 };
 
 // TODO: Part 3c
-StructuredBuffer<INSTANCE_DATA> drawInfo : register(b1, space0);
+StructuredBuffer<INSTANCE_DATA> drawInfo : register(b0, space0);
 
 // TODO: Part 4a
 // TODO: Part 4b
