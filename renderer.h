@@ -679,7 +679,7 @@ public:
 		VkCommandBuffer commandBuffer = GetCurrentCommandBuffer();
 		SetUpPipeline(commandBuffer);
 		// TODO: Part 3i
-//		GvkHelper::write_to_buffer(device, storageBufferData[1], &instances[1], sizeof(instanceData) * FSLogo_meshcount);
+		GvkHelper::write_to_buffer(device, storageBufferData[1], &instances[1], sizeof(instanceData) * FSLogo_meshcount);
 		//GvkHelper::write_to_buffer(
 		//	device,                             // Vulkan device
 		//	instanceBufferMemory,               // Buffer memory where instance data is stored
