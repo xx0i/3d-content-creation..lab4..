@@ -1,3 +1,4 @@
+#pragma pack_matrix( row_major )   
 // an ultra simple hlsl vertex shader
 // TODO: Part 1f
 struct VERTEX
@@ -23,11 +24,13 @@ float4 main(VERTEX input: POSITION) : SV_POSITION
 {
 	// TODO: Part 1h
 	// TODO: Part 3g
-    float3 tempShift = input.pos;
-    tempShift.z += 0.75f;
-    tempShift.y -= 0.75f;
+    //float3 tempShift = input.pos;
+    //tempShift.z += 0.75f;
+    //tempShift.y -= 0.75f;
 	// TODO: Part 2f
+    float4 result = mul(float4(input.pos.xyz, 1), viewMatrix);
+    float4 pos = mul(result, perspectiveMatrix);
 	// TODO: Part 3h
 	// TODO: Part 4b
-    return float4(tempShift.xyz, 1);
+    return pos;
 }
