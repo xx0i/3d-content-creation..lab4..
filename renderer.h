@@ -111,13 +111,6 @@ public:
 
 	void initializeViewMatrix()
 	{
-		//GW::MATH::GMATRIXF translationMatrix = GW::MATH::GIdentityMatrixF;
-		//GW::MATH::GVECTORF translationVector = { 0.75f, 0.25f, -1.5f, 1.0f };
-		//interfaceProxy.TranslateGlobalF(translationMatrix, translationVector, translationMatrix);
-		//interfaceProxy.RotateYGlobalF(translationMatrix, G_DEGREE_TO_RADIAN_F(25), translationMatrix);
-
-		//interfaceProxy.RotateXGlobalF(translationMatrix, G_DEGREE_TO_RADIAN_F(45), translationMatrix);
-
 		GW::MATH::GVECTORF cameraPosition = { 0.75f, 0.25f, -1.5f };
 		GW::MATH::GVECTORF targetPosition = { 0.15f, 0.75f, 0.0f };
 		GW::MATH::GVECTORF upVector = { 0.0f, 1.0f, 0.0f };
