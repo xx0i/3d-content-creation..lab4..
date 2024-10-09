@@ -289,7 +289,7 @@ private:
 	{
 		VkDescriptorSetAllocateInfo descriptorAllocateInfo = {};
 		descriptorAllocateInfo.descriptorPool = descriptorPool;
-		descriptorAllocateInfo.descriptorSetCount = 2;
+		descriptorAllocateInfo.descriptorSetCount = 1;
 		descriptorAllocateInfo.pNext = nullptr;
 		descriptorAllocateInfo.pSetLayouts = &descriptorSetLayout;
 		descriptorAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -330,7 +330,7 @@ private:
 
 
 			VkWriteDescriptorSet writeStorageDescriptor = {};
-			writeStorageDescriptor.descriptorCount = 1;
+			writeStorageDescriptor.descriptorCount = 2;
 			writeStorageDescriptor.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 			writeStorageDescriptor.dstArrayElement = 0;
 			writeStorageDescriptor.dstBinding = 1;
