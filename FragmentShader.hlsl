@@ -57,7 +57,7 @@ float4 main(OUTPUT_TO_RASTERIZER input) : SV_TARGET
 	// TODO: Part 4c
     float3 norm = normalize(input.normW);
     float3 lightDirection = normalize(-lightDir);
-    float diffuseIntensity = clamp(dot(norm, lightDirection), 0.0f, 1.0f);
+    float diffuseIntensity = saturate(dot(norm, lightDirection));
     float3 finalColour = diffuseIntensity * diffuseColour * lightColour.xyz;
     
 	// TODO: Part 4d (half-vector or reflect method, your choice)
