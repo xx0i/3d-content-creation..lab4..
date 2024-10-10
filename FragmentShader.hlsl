@@ -32,7 +32,14 @@ struct INSTANCE_DATA
 StructuredBuffer<INSTANCE_DATA> drawInfo : register(b1, space0);
 
 // TODO: Part 4a (optional)
-// TODO: Part 4b
+struct OUTPUT_TO_RASTERIZER
+{
+    float4 posH : SV_POSITION;
+    float3 posW : WORLD;
+    float3 normW : NORMAL;
+    float2 coordUV : TEXCOORD;
+    nointerpolation uint index : Index;
+};
 // TODO: Part 3g
 // TODO: Part 3h
 struct OUTPUT
@@ -40,14 +47,20 @@ struct OUTPUT
     float4 position : SV_POSITION;
     nointerpolation uint index : Index;
 };
-
-float4 main(OUTPUT input) : SV_TARGET
+// TODO: Part 4b
+float4 main(OUTPUT_TO_RASTERIZER input) : SV_TARGET
 {
 	// TODO: Part 3e
-    float4 diffuseColour = float4(drawInfo[input.index].material.Kd, 1);
-    return diffuseColour;
+    float3 diffuseColour = drawInfo[input.index].material.Kd;
 	// TODO: Part 3h
     //return float4(0.62f, 0.50f, 0.50f, 0); // TODO: Part 1a (optional)
 	// TODO: Part 4c
+    float3 norm = normalize(input.normW);
+    float3 lightDirection = normalize(-lightDir);
+    float diffuseIntensity = max(dot(norm, lightDirection), 0.0);
+    float3 finalColour = diffuseIntensity * diffuseColour * lightColour.xyz;
+    
 	// TODO: Part 4d (half-vector or reflect method, your choice)
-    }
+    
+    return float4(finalColour, 1.0);
+}

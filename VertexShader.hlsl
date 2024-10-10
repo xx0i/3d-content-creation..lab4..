@@ -40,6 +40,14 @@ struct INSTANCE_DATA
 StructuredBuffer<INSTANCE_DATA> drawInfo : register(b1, space0);
 
 // TODO: Part 4a
+struct OUTPUT_TO_RASTERIZER
+{
+    float4 posH : SV_POSITION;
+    float3 posW : WORLD;
+    float3 normW : NORMAL;
+    float2 coordUV : TEXCOORD;
+    nointerpolation uint index : Index;
+};
 // TODO: Part 4b
 // TODO: Part 3g
 // TODO: Part 3h
@@ -49,22 +57,21 @@ struct OUTPUT
     nointerpolation uint index : Index;
 };
 
-OUTPUT main(VERTEX input, uint instanceID : SV_InstanceID) : SV_POSITION
+OUTPUT_TO_RASTERIZER main(VERTEX input, uint instanceID : SV_InstanceID) : SV_POSITION
 {
 	// TODO: Part 1h
-    //float3 tempShift = input.pos;
-    //tempShift.z += 0.75f;
-    //tempShift.y -= 0.75f;
 	// TODO: Part 3g
     matrix worldMatrix = drawInfo[instanceID].worldMatrix;
-    float4 result = mul(float4(input.pos.xyz, 1), worldMatrix);
+    float4 worldPos = mul(float4(input.pos.xyz, 1), worldMatrix);
     // TODO: Part 2f
-    result = mul(result, viewMatrix);
-    float4 pos = mul(result, perspectiveMatrix);
-	// TODO: Part 3h
-    OUTPUT output;
-    output.position = pos;
-    output.index = instanceID;
+    float4 viewPos = mul(worldPos, viewMatrix);
+    float4 perspectivePos = mul(viewPos, perspectiveMatrix);
 	// TODO: Part 4b
+    float3 worldNorm = normalize(mul(input.normal, (float3x3) worldMatrix));
+    OUTPUT_TO_RASTERIZER output;
+    output.posH = perspectivePos;
+    output.posW = worldPos;
+    output.normW = worldNorm;
+    output.index = instanceID;
     return output;
 }
