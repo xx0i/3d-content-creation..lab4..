@@ -67,7 +67,7 @@ class Renderer
 	GW::MATH::GMATRIXF viewMatrix = GW::MATH::GIdentityMatrixF;
 	GW::MATH::GMATRIXF leftHandedPerspectiveMatrix = GW::MATH::GIdentityMatrixF;
 	GW::MATH::GVECTORF lightColour = { 0.9f, 0.9f, 1.0f, 1.0f };
-	GW::MATH::GVECTORF lightDir = { (-1.0f/sqrt(6.0f)), (-1.0f / sqrt(6.0f)), (2.0f / sqrt(6.0f)) }; //original values were { -1.0f, -1.0f, 2.0f }
+	GW::MATH::GVECTORF lightDir = { (1.0f/sqrt(6.0f)), (-1.0f / sqrt(6.0f)), (2.0f / sqrt(6.0f)) }; //original values were { -1.0f, -1.0f, 2.0f }
 
 	// TODO: Part 2b // TODO: Part 4d
 	shaderVars shader = {};
