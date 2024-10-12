@@ -62,14 +62,13 @@ OUTPUT_TO_RASTERIZER main(VERTEX input, uint instanceID : SV_InstanceID) : SV_PO
 	// TODO: Part 1h
 	// TODO: Part 3g
     matrix worldMatrix = drawInfo[instanceID].worldMatrix;
-
     float4 worldPos = mul(float4(input.pos.xyz, 1), worldMatrix);
     // TODO: Part 2f
     float4 viewPos = mul(worldPos, viewMatrix);
     float4 perspectivePos = mul(viewPos, perspectiveMatrix);
 	// TODO: Part 4b
 
-    float3 worldNorm = normalize(mul(input.normal, (float3x3)worldMatrix));
+    float3 worldNorm = normalize(mul(input.normal, (float3x3)worldMatrix)); //added in 4b + changed to new output
 
     OUTPUT_TO_RASTERIZER output;
     output.posH = perspectivePos;
