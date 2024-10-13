@@ -449,7 +449,7 @@ private:
 		vertex_attribute_description[2].binding = 0;
 		vertex_attribute_description[2].location = 2;
 		vertex_attribute_description[2].format = VK_FORMAT_R32G32B32_SFLOAT;
-		vertex_attribute_description[2].offset = sizeof(OBJ_VERT);
+		vertex_attribute_description[2].offset = sizeof(OBJ_VEC3) * 2;
 
 		VkPipelineVertexInputStateCreateInfo input_vertex_info = CreateVkPipelineVertexInputStateCreateInfo(&vertex_binding_description, 1, vertex_attribute_description.data(), 3);
 		VkViewport viewport = CreateViewportFromWindowDimensions();
