@@ -59,10 +59,15 @@ float4 main(OUTPUT_TO_RASTERIZER input) : SV_TARGET
     float3 norm = normalize(input.normW);
     float3 lightDirection = normalize(lightDir);
     float diffuseIntensity = saturate(dot(norm, -lightDirection));
-   // float4 finalColour = diffuseIntensity * float4(diffuseColour, 1) * lightColour;
-    float4 finalColour = lerp(float4(diffuseColour, 1), lightColour, diffuseIntensity);
+    float4 finalColour = (diffuseIntensity + ambientLight) * float4(diffuseColour, 1) * lightColour;
     
 	// TODO: Part 4d (half-vector or reflect method, your choice)
-    
+    //half-vector method
+    float3 viewDir = normalize(camPos.xyz - input.posW);
+    float3 halfVect = normalize(-lightDirection.xyz + viewDir);
+    float intensity = pow(saturate(dot(norm, halfVect)), drawInfo[input.index].material.Ns);
+    float3 reflected = lightColour.xyz * drawInfo[input.index].material.Ks * intensity;
+    finalColour += float4(reflected, 1.0f);
+
     return finalColour;
 }
