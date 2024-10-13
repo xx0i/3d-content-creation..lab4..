@@ -21,6 +21,7 @@ class Renderer
 	{
 		GW::MATH::GMATRIXF viewMatrix, perspectiveMatrix;
 		GW::MATH::GVECTORF lightColour, lightDir;
+		GW::MATH::GVECTORF ambientLight, camPos;
 	};
 	// TODO: Part 3a
 	struct instanceData
@@ -68,6 +69,7 @@ class Renderer
 	GW::MATH::GMATRIXF leftHandedPerspectiveMatrix = GW::MATH::GIdentityMatrixF;
 	GW::MATH::GVECTORF lightColour = { 0.9f, 0.9f, 1.0f, 1.0f };
 	GW::MATH::GVECTORF lightDir = { -1.0f, -1.0f, 2.0f };
+	GW::MATH::GVECTORF ambientLight = { 0.25f, 0.25f, 0.35f };
 
 	// TODO: Part 2b // TODO: Part 4d
 	shaderVars shader = {};
@@ -96,6 +98,7 @@ public:
 		// TODO: Part 2b // TODO: Part 4d
 		shader.lightColour = lightColour;
 		shader.lightDir = lightDir;
+		shader.ambientLight = ambientLight;
 
 		// TODO: Part 2a
 		initializeViewMatrix();
@@ -123,6 +126,7 @@ public:
 		GW::MATH::GVECTORF upVector = { 0.0f, 1.0f, 0.0f };
 		interfaceProxy.LookAtLHF(cameraPosition, targetPosition, upVector, viewMatrix);
 		shader.viewMatrix = viewMatrix;
+		shader.camPos = cameraPosition;
 	}
 
 	void initializePerspectiveMatrix()

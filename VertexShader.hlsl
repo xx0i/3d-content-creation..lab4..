@@ -13,6 +13,7 @@ cbuffer VARIABLES
 {
     matrix viewMatrix, perspectiveMatrix;
     vector lightColour, lightDir;
+    vector ambientLight, camPos;
 };
 // TODO: Part 3b
 struct OBJ_ATTRIB

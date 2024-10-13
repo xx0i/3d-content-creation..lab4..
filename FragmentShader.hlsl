@@ -4,6 +4,7 @@ cbuffer VARIABLES
 {
     matrix viewMatrix, perspectiveMatrix;
     vector lightColour, lightDir;
+    vector ambientLight, camPos;
 };
 
 // TODO: Part 3b
@@ -58,8 +59,8 @@ float4 main(OUTPUT_TO_RASTERIZER input) : SV_TARGET
     float3 norm = normalize(input.normW);
     float3 lightDirection = normalize(lightDir);
     float diffuseIntensity = saturate(dot(norm, -lightDirection));
-    float4 finalColour = diffuseIntensity * float4(diffuseColour, 1) * lightColour;
-   //float3 finalColour = lerp(diffuseColour, lightColour.xyz, diffuseIntensity);
+   // float4 finalColour = diffuseIntensity * float4(diffuseColour, 1) * lightColour;
+    float4 finalColour = lerp(float4(diffuseColour, 1), lightColour, diffuseIntensity);
     
 	// TODO: Part 4d (half-vector or reflect method, your choice)
     
